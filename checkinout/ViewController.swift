@@ -14,8 +14,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
 
+    @IBOutlet weak var latitudeLabel: UILabel!
+    @IBOutlet weak var longtitudeLabel: UILabel!
     var locationManager: CLLocationManager!
-    var curLocation: CLLocation!
+    var curLocation: CLLocation = InfowayLocation
     var time = 0
     var timer = Timer()
     var start: NSDate!
@@ -67,12 +69,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func getHours() {
-        self.timeLabel.text = "0:00:00"
+        self.timeLabel.text = "00:00:00"
     }
     
     func setuptheTimer() {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ViewController.action), userInfo: nil, repeats: true)
-        start = NSDate()
+//        start = NSDate()
         
     }
     
@@ -101,8 +103,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         self.curLocation = locations[0] as CLLocation
-        print("\(self.curLocation.coordinate.latitude)")
-        print("\(self.curLocation.coordinate.longitude)")
+        self.longtitudeLabel.text = "\(self.curLocation.coordinate.longitude)"
+        self.latitudeLabel.text = "\(self.curLocation.coordinate.latitude)"
+        setupUI()
     }
     
     func checkedOut() -> Bool {
@@ -111,13 +114,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func withIn100ms() -> Bool {
+        if let distanceInMeters = curLocation.distance(from: InfowayLocation) as? Double {
+            if distanceInMeters <= 100.0 {
+                return true
+            }
+        }
         
-        return true
+        return false
     }
 
     func checking() -> Bool {
         
-        return true
+        return false
     }
 
 }
