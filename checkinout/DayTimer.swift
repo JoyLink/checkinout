@@ -11,10 +11,10 @@ import CoreData
 
 
 class DayTimer {
-    var date: NSDate?
+    var date: String?
     var time: Int?
     
-    init(date: NSDate, time: Int) {
+    init(date: String, time: Int) {
         self.date = date
         self.time = time
     }

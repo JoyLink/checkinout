@@ -35,34 +35,44 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func setupUI() {
         setupSignBtn()
         setupDate()
+        if checkInBtn.alpha == 0.7 {
+            checkInBtn.isUserInteractionEnabled = false
+        } else {
+            checkInBtn.isUserInteractionEnabled = true
+        }
     }
     
     func setupDate() {
+        let result = getTodayDate()
+        self.todayLabel.text = result
+    }
+    
+    func getTodayDate() -> String {
         let date = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         let result = formatter.string(from: date)
-        self.todayLabel.text = result
+        return result
     }
     
     func setupSignBtn() {
         if checkedOut() {
-            checkInBtn.setTitle("Done for today", for: .normal)
+            checkInBtn.setTitle(donefortoday, for: .normal)
             checkInBtn.alpha = 0.7
             getHours()
         }
         else if checking() {
-            checkInBtn.setTitle("Check out", for: .normal)
+            checkInBtn.setTitle(checkout, for: .normal)
             checkInBtn.alpha = 1.0
             setuptheTimer()
         }
         else if withIn100ms(){
-            checkInBtn.setTitle("Check in", for: .normal)
+            checkInBtn.setTitle(checkin, for: .normal)
             checkInBtn.alpha = 1.0
             self.timeLabel.text = "0:00:00"
         }
         else {
-            checkInBtn.setTitle("Unable to check in", for: .normal)
+            checkInBtn.setTitle(unabletocheck, for: .normal)
             checkInBtn.alpha = 0.7
             getHours()
         }
@@ -114,19 +124,45 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func withIn100ms() -> Bool {
-        if let distanceInMeters = curLocation.distance(from: InfowayLocation) as? Double {
-            if distanceInMeters <= 100.0 {
-                return true
-            }
-        }
         
-        return false
+        return true
+        
+//        if let distanceInMeters = curLocation.distance(from: InfowayLocation) as? Double {
+//            if distanceInMeters <= 100.0 {
+//                return true
+//            }
+//        }
+//        
+//        return false
     }
 
     func checking() -> Bool {
-        
+        if timer.isValid{
+            return true
+        }
         return false
     }
+    
+    func doCheckin() {
+        start = NSDate()
+    }
+    
+    func doCheckout() {
+        let end = NSDate()
+        let timeInterval: Double = end.timeIntervalSince(start as Date);
+        let dayTime = DayTimer(date: getTodayDate(), time: Int(timeInterval))
+        dayTime.save()
+        timer.invalidate()
+    }
 
+    @IBAction func CheckBtnPressed(_ sender: Any) {
+        if let checkText = checkInBtn.titleLabel?.text {
+            if checkText == checkin {
+                doCheckin()
+            } else if checkText == checkout {
+                doCheckout()
+            }
+        }
+    }
 }
 

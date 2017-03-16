@@ -43,7 +43,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="IN AND OUT" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PvK-ca-0qY">
-                                        <rect key="frame" x="8" y="0.0" width="123" height="61"/>
+                                        <rect key="frame" x="62" y="0.0" width="123" height="61"/>
                                         <fontDescription key="fontDescription" type="italicSystem" pointSize="22"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -51,7 +51,7 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.2346111203" green="0.71094866999999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="PvK-ca-0qY" firstAttribute="leading" secondItem="8Wk-GY-cqV" secondAttribute="leading" constant="8" id="3ca-KP-oH8"/>
+                                    <constraint firstItem="PvK-ca-0qY" firstAttribute="leading" secondItem="8Wk-GY-cqV" secondAttribute="leading" constant="62" id="3ca-KP-oH8"/>
                                     <constraint firstAttribute="trailing" secondItem="G2M-yw-tHI" secondAttribute="trailing" constant="8" id="7xs-j1-TDH"/>
                                     <constraint firstAttribute="trailing" secondItem="RCP-0I-rji" secondAttribute="trailing" constant="8" id="T5m-4L-N4P"/>
                                     <constraint firstItem="PvK-ca-0qY" firstAttribute="top" secondItem="8Wk-GY-cqV" secondAttribute="top" id="j66-ct-D7t"/>
@@ -114,6 +114,9 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="customise" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="CheckBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mkp-YX-zo4"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
