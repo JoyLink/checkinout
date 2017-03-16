@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "checkinout/ViewController.swift"
-            timestampString = "511340048.033632"
+            timestampString = "511342370.228184"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
+            startingLineNumber = "185"
+            endingLineNumber = "185"
             landmarkName = "doCheckout()"
             landmarkType = "7">
          </BreakpointContent>

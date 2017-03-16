@@ -9,11 +9,12 @@
 import UIKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var checkInBtn: UIButton!
     @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
 
+    @IBOutlet weak var controller: UITableView!
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var longtitudeLabel: UILabel!
     var locationManager: CLLocationManager!
@@ -25,6 +26,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        self.controller.delegate = self
+        self.controller.dataSource = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -41,6 +44,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         } else {
             checkInBtn.isUserInteractionEnabled = true
         }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "historyCell", for: indexPath) as! HistoryCell
+        cell.configCell(dayRecord: self.dayTimers[indexPath.row])
+        return cell
+    }
+    
+
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        getDayTimers()
+        return self.dayTimers.count
     }
     
     func setupDate() {
