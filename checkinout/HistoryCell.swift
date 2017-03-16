@@ -15,7 +15,8 @@ class HistoryCell: UITableViewCell {
     
     func configCell(dayRecord: DayRecord) {
         dateLabel.text = dayRecord.date
-        hourLabel.text = "\(dayRecord.hours)"
+        hourLabel.text = secondsToHoursMinutesSeconds(seconds: Int(dayRecord.hours))
+        
     }
     
 

@@ -114,13 +114,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     func action() {
         let end = NSDate()
         let timeInterval: Double = end.timeIntervalSince(start as Date); // <<<<< Difference in seconds (double)
-        var (H, M, S) = secondsToHoursMinutesSeconds(seconds: Int(timeInterval))
-        self.timeLabel.text = ("\(H):\(M):\(S)")
+        self.timeLabel.text = secondsToHoursMinutesSeconds(seconds: Int(timeInterval))
     }
     
-    func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
-        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
-    }
+   
     
     func determinLoc() {
         locationManager = CLLocationManager()
@@ -144,8 +141,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         getDayTimers()
         for record in dayTimers {
             if record.date == getTodayDate() {
-                var (H, M, S) = secondsToHoursMinutesSeconds(seconds: Int(record.hours))
-                self.timeLabel.text = ("\(H):\(M):\(S)")
+                
+                self.timeLabel.text = secondsToHoursMinutesSeconds(seconds: Int(record.hours))
                 return true
             }
         }
@@ -154,15 +151,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     func withIn100ms() -> Bool {
         
-        return true
+        if let distanceInMeters = curLocation.distance(from: InfowayLocation) as? Double {
+            if distanceInMeters <= 100.0 {
+                return true
+            }
+        }
         
-//        if let distanceInMeters = curLocation.distance(from: InfowayLocation) as? Double {
-//            if distanceInMeters <= 100.0 {
-//                return true
-//            }
-//        }
-//        
-//        return false
+        return false
     }
 
     func checking() -> Bool {
@@ -175,6 +170,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     func doCheckin() {
         start = NSDate()
         setuptheTimer()
+        setupUI()
+        
+        let alert = UIAlertController(title: "Welcome to Infoway!", message: "Your office hours is now being tracked. Have a nice day!", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     func doCheckout() {
@@ -183,6 +183,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         let dayTime = DayTimer(date: getTodayDate(), time: Int(timeInterval))
         dayTime.save()
         self.timer.invalidate()
+        self.controller.reloadData()
     }
 
     @IBAction func CheckBtnPressed(_ sender: Any) {
