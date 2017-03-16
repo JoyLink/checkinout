@@ -21,6 +21,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var time = 0
     var timer = Timer()
     var start: NSDate!
+    var dayTimers:[DayRecord] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -59,32 +60,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if checkedOut() {
             checkInBtn.setTitle(donefortoday, for: .normal)
             checkInBtn.alpha = 0.7
-            getHours()
+            checkInBtn.isUserInteractionEnabled = false
         }
         else if checking() {
             checkInBtn.setTitle(checkout, for: .normal)
             checkInBtn.alpha = 1.0
+            checkInBtn.isUserInteractionEnabled = true
             setuptheTimer()
         }
         else if withIn100ms(){
             checkInBtn.setTitle(checkin, for: .normal)
             checkInBtn.alpha = 1.0
-            self.timeLabel.text = "0:00:00"
+            checkInBtn.isUserInteractionEnabled = true
+            self.timeLabel.text = "00:00:00"
         }
         else {
             checkInBtn.setTitle(unabletocheck, for: .normal)
             checkInBtn.alpha = 0.7
-            getHours()
+            checkInBtn.isUserInteractionEnabled = false
         }
     }
     
-    func getHours() {
-        self.timeLabel.text = "00:00:00"
-    }
     
     func setuptheTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ViewController.action), userInfo: nil, repeats: true)
-//        start = NSDate()
+        if self.timer.isValid == false{
+            self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ViewController.action), userInfo: nil, repeats: true)
+        }
         
     }
     
@@ -119,7 +120,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func checkedOut() -> Bool {
-        
+        getDayTimers()
+        for record in dayTimers {
+            if record.date == getTodayDate() {
+                var (H, M, S) = secondsToHoursMinutesSeconds(seconds: Int(record.hours))
+                self.timeLabel.text = ("\(H):\(M):\(S)")
+                return true
+            }
+        }
         return false
     }
     
@@ -137,7 +145,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     func checking() -> Bool {
-        if timer.isValid{
+        if self.timer.isValid{
             return true
         }
         return false
@@ -145,6 +153,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func doCheckin() {
         start = NSDate()
+        setuptheTimer()
     }
     
     func doCheckout() {
@@ -152,16 +161,41 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         let timeInterval: Double = end.timeIntervalSince(start as Date);
         let dayTime = DayTimer(date: getTodayDate(), time: Int(timeInterval))
         dayTime.save()
-        timer.invalidate()
+        self.timer.invalidate()
     }
 
     @IBAction func CheckBtnPressed(_ sender: Any) {
+        
         if let checkText = checkInBtn.titleLabel?.text {
             if checkText == checkin {
                 doCheckin()
             } else if checkText == checkout {
-                doCheckout()
+                let alert = UIAlertController(title: "Warning!", message: "Are you sure to check out? You can't re-check in today!", preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { action in
+                    switch action.style{
+                    case .default:
+                        self.doCheckout()
+                        
+                    case .cancel:
+                        print("cancel")
+                        
+                    case .destructive:
+                        print("destructive")
+                    }
+                }))
+                alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                
+                
             }
+        }
+    }
+    
+    func getDayTimers() {
+        do {
+            dayTimers = try context.fetch(DayRecord.fetchRequest())
+        } catch {
+            print("Ooops")
         }
     }
 }
